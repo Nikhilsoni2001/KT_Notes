@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "996021420686",
+    "project_id": "kt-notes-432f7",
+    "storage_bucket": "kt-notes-432f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996021420686:android:ec080c82832abb47aa7fdf",
+        "android_client_info": {
+          "package_name": "com.nikhil.kt_notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996021420686-vosnmnn8ecsjp1hpam7nq6snq46t6f76.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJEv6cYUR6x35bn0dqJ4ZfD0u-i9NJaDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996021420686-vosnmnn8ecsjp1hpam7nq6snq46t6f76.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

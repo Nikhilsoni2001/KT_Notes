@@ -1,0 +1,2 @@
+rootProject.name = "KT-Notes"
+include ':app'

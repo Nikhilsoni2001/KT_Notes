@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">KT-Notes</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_you_have_an_account">Don\'t you have an account?</string>
+    <string name="register">Register</string>
+    <string name="or">OR</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="Save">Save</string>
+    <string name="home">Home</string>
+    <string name="favourite">Favourite</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="app_info">App Info</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="close">Close</string>
+    <string name="open">Open</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dummy_desc">This is note description. This is a very very very very very very very very looooooooooooong text.</string>
+    <string name="sync">Sync</string>
+    <string name="createacc">Create an Account</string>
+    <string name="create_account">Create Account</string>
+    <string name="logintxt">Have an account?</string>
+</resources>
