@@ -9,6 +9,7 @@ import com.google.firebase.firestore.SetOptions
 import com.nikhil.kt_notes.db.Note
 import com.nikhil.kt_notes.repositories.NotesRepository
 import com.nikhil.kt_notes.ui.activities.NotesActivity
+import com.nikhil.kt_notes.util.Preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -17,6 +18,12 @@ import java.lang.Exception
 
 class NotesViewModel(private val context: Context, private val repository: NotesRepository) :
     ViewModel() {
+
+    private val preferences = Preferences(context)
+
+    fun setDark(mode: Int) = preferences.setDark(mode)
+    fun getDark(): Int = preferences.getDark()
+
     fun upsert(note: Note) = viewModelScope.launch { repository.upsert(note) }
     fun delete(note: Note) = viewModelScope.launch { repository.delete(note) }
     fun getAllNotes() = repository.getAllNotes()

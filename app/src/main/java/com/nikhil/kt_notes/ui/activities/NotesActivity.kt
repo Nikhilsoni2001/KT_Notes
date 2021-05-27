@@ -1,11 +1,17 @@
 package com.nikhil.kt_notes.ui.activities
 
+import android.app.AlertDialog
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SearchView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.navigation.NavigationView
@@ -42,6 +48,8 @@ class NotesActivity : AppCompatActivity() {
         val repository = NotesRepository(database)
         val factory = NotesViewModelFactory(this@NotesActivity, repository)
         viewModel = ViewModelProvider(this, factory).get(NotesViewModel::class.java)
+
+        checkTheme()
 
         drawerLayout = findViewById(R.id.drawerLayout)
         navigationView = findViewById(R.id.navigationView)
@@ -92,10 +100,95 @@ class NotesActivity : AppCompatActivity() {
             .commit()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+
+        getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchItem = menu?.findItem(R.id.search)
+        val searchView = searchItem?.actionView as SearchView
+        searchView.isSubmitButtonEnabled = true
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchView.clearFocus()
+                searchView.setQuery("", false)
+                searchItem.collapseActionView()
+                Toast.makeText(this@NotesActivity, "Looking for $query", Toast.LENGTH_SHORT).show()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Toast.makeText(this@NotesActivity, "Looking for $newText", Toast.LENGTH_SHORT)
+                    .show()
+                return false
+            }
+
+        })
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)) {
             return true
         }
+
+        when (item.itemId) {
+            R.id.theme -> {
+                chooseThemeDialog()
+                return true
+            }
+        }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun chooseThemeDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.choose_theme_text))
+        val styles = arrayOf("Light", "Dark", "System Default")
+        val intChecked = viewModel.getDark()
+
+        builder.setSingleChoiceItems(styles, intChecked) { dialog, mode ->
+            when (mode) {
+                0 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    viewModel.setDark(0)
+                    delegate.applyDayNight()
+                    dialog.dismiss()
+                }
+
+                1 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    viewModel.setDark(1)
+                    delegate.applyDayNight()
+                    dialog.dismiss()
+                }
+                2 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    viewModel.setDark(2)
+                    delegate.applyDayNight()
+                    dialog.dismiss()
+                }
+            }
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun checkTheme() {
+        when (viewModel.getDark()) {
+            0 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                delegate.applyDayNight()
+            }
+            1 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                delegate.applyDayNight()
+            }
+            2 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                delegate.applyDayNight()
+            }
+        }
     }
 }
