@@ -9,6 +9,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.nikhil.kt_notes.R
 import com.nikhil.kt_notes.db.Note
 import com.nikhil.kt_notes.ui.activities.NotesActivity
@@ -38,15 +40,20 @@ class CreateNoteFragment : Fragment() {
 
         btnCreateNote.setOnClickListener {
             val noteTitle = etNoteTitle.text.toString()
-            val id: String? = ""
+            var id: String? = ""
             val noteContent = etNoteContent.text.toString()
 
             if (noteTitle.trim().isNotEmpty()) {
                 if (noteContent.trim().isNotEmpty()) {
-
                     CoroutineScope(Dispatchers.IO).launch {
                         val note = Note(0, "", noteTitle, noteContent, false, false)
-                        viewModel.upsert(note)
+                        id = viewModel.saveNote(note)
+//                       saving ID also
+                        val noteCollectionRef = FirebaseFirestore.getInstance()
+                            .collection(NotesActivity.collection_name!!)
+                        val map = mutableMapOf<String, Any>()
+                        map["document_id"] = id!!
+                        noteCollectionRef.document(id!!).set(map, SetOptions.merge())
                     }
 
                     findNavController().navigate(R.id.action_createNoteFragment_to_notesFragment)

@@ -18,6 +18,10 @@ import com.nikhil.kt_notes.R
 import com.nikhil.kt_notes.ui.activities.NotesActivity
 import com.nikhil.kt_notes.ui.adapter.NotesAdapter
 import com.nikhil.kt_notes.ui.viewModel.NotesViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NotesFragment : Fragment() {
 
@@ -47,8 +51,14 @@ class NotesFragment : Fragment() {
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
 
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.deleteAllNotes()
+            val notesList = viewModel.retrieveNotes()
+            for (note in notesList)
+                viewModel.upsert(note)
+        }
+
         viewModel.getAllNotes().observe(viewLifecycleOwner, Observer { notes ->
-            Log.d("NOTES", "onCreateView: " + notes)
             notesAdapter.differ.submitList(notes)
         })
 
@@ -66,12 +76,24 @@ class NotesFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val note = notesAdapter.differ.currentList[position]
-                viewModel.delete(note)
-                Snackbar.make(
-                    rvNotes,
-                    "${note.note_title} Deleted Successfully!!",
-                    Snackbar.LENGTH_LONG
-                ).setAction("Undo", View.OnClickListener { viewModel.upsert(note) }).show()
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.deleteData(note)
+                    viewModel.delete(note)
+                    withContext(Dispatchers.Main) {
+                        Snackbar.make(
+                            rvNotes,
+                            "${note.note_title} Deleted Successfully!!",
+                            Snackbar.LENGTH_LONG
+                        ).setAction("Undo", View.OnClickListener {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.saveNote(note)
+                                viewModel.upsert(note)
+                            }
+                        }).show()
+                    }
+                }
+
+
             }
         }
 

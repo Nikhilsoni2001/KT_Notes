@@ -9,19 +9,19 @@
         android:id="@+id/notesFragment"
         android:name="com.nikhil.kt_notes.ui.fragments.NotesFragment"
         android:label="fragment_notes"
-        tools:layout="@layout/fragment_notes" >
-        <action
-            android:id="@+id/action_notesFragment_to_updateFragment"
-            app:destination="@id/updateFragment" />
+        tools:layout="@layout/fragment_notes">
         <action
             android:id="@+id/action_notesFragment_to_createNoteFragment"
             app:destination="@id/createNoteFragment" />
+        <action
+            android:id="@+id/action_notesFragment_to_updateFragment"
+            app:destination="@id/updateFragment" />
     </fragment>
     <fragment
         android:id="@+id/createNoteFragment"
         android:name="com.nikhil.kt_notes.ui.fragments.CreateNoteFragment"
         android:label="fragment_create_note"
-        tools:layout="@layout/fragment_create_note" >
+        tools:layout="@layout/fragment_create_note">
         <action
             android:id="@+id/action_createNoteFragment_to_notesFragment"
             app:destination="@id/notesFragment" />
@@ -29,10 +29,12 @@
     <fragment
         android:id="@+id/updateFragment"
         android:name="com.nikhil.kt_notes.ui.fragments.UpdateFragment"
-        android:label="fragment_update"
-        tools:layout="@layout/fragment_update" >
+        android:label="UpdateFragment">
         <action
             android:id="@+id/action_updateFragment_to_notesFragment"
             app:destination="@id/notesFragment" />
+        <argument
+            android:name="notes"
+            app:argType="com.nikhil.kt_notes.db.Note" />
     </fragment>
 </navigation>

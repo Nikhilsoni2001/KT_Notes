@@ -17,6 +17,10 @@ import com.nikhil.kt_notes.ui.fragments.FavouriteFragment
 import com.nikhil.kt_notes.ui.fragments.NotesFragment
 import com.nikhil.kt_notes.ui.viewModel.NotesViewModel
 import com.nikhil.kt_notes.ui.viewModel.NotesViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NotesActivity : AppCompatActivity() {
 
@@ -25,6 +29,10 @@ class NotesActivity : AppCompatActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
+
+    companion object {
+        val collection_name = FirebaseAuth.getInstance().currentUser?.email
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,11 +68,16 @@ class NotesActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        FirebaseAuth.getInstance().signOut()
-        Intent(this@NotesActivity, LoginActivity::class.java).also {
-            startActivity(it)
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.deleteAllNotes()
+            FirebaseAuth.getInstance().signOut()
+            withContext(Dispatchers.Main) {
+                Intent(this@NotesActivity, LoginActivity::class.java).also {
+                    startActivity(it)
+                }
+                finish()
+            }
         }
-        finish()
     }
 
     private fun openHome() {
