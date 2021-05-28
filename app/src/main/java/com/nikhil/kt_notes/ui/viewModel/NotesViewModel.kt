@@ -2,8 +2,7 @@ package com.nikhil.kt_notes.ui.viewModel
 
 import android.content.Context
 import android.widget.Toast
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.nikhil.kt_notes.db.Note
@@ -18,7 +17,6 @@ import java.lang.Exception
 
 class NotesViewModel(private val context: Context, private val repository: NotesRepository) :
     ViewModel() {
-
     private val preferences = Preferences(context)
 
     fun setDark(mode: Int) = preferences.setDark(mode)
@@ -28,6 +26,12 @@ class NotesViewModel(private val context: Context, private val repository: Notes
     fun delete(note: Note) = viewModelScope.launch { repository.delete(note) }
     fun getAllNotes() = repository.getAllNotes()
     fun deleteAllNotes() = repository.deleteAllNotes()
+
+    var readData: MutableLiveData<List<Note>> = MutableLiveData()
+
+    fun searchDatabase(searchQuery: String) {
+        readData.postValue(repository.searchDatabase(searchQuery))
+    }
 
     private var noteCollectionRef =
         FirebaseFirestore.getInstance().collection(NotesActivity.collection_name!!)

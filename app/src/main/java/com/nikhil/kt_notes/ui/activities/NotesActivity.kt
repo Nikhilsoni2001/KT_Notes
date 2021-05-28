@@ -114,18 +114,25 @@ class NotesActivity : AppCompatActivity() {
                 searchView.setQuery("", false)
                 searchItem.collapseActionView()
                 Toast.makeText(this@NotesActivity, "Looking for $query", Toast.LENGTH_SHORT).show()
+                searchDB(query.toString())
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 Toast.makeText(this@NotesActivity, "Looking for $newText", Toast.LENGTH_SHORT)
                     .show()
+                searchDB(newText.toString())
                 return false
             }
 
         })
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun searchDB(query: String) {
+        val searchQuery = "%$query%"
+        viewModel.searchDatabase(searchQuery)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
