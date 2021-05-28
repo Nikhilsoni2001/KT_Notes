@@ -37,4 +37,13 @@
             android:name="notes"
             app:argType="com.nikhil.kt_notes.db.Note" />
     </fragment>
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="com.nikhil.kt_notes.ui.fragments.FavouriteFragment"
+        android:label="fragment_favourite"
+        tools:layout="@layout/fragment_favourite" >
+        <action
+            android:id="@+id/action_favouriteFragment_self"
+            app:destination="@id/favouriteFragment" />
+    </fragment>
 </navigation>

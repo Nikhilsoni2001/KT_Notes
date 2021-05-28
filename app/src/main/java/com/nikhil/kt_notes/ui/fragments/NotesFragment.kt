@@ -58,12 +58,26 @@ class NotesFragment : Fragment() {
         }
 
         viewModel.getAllNotes().observe(viewLifecycleOwner, Observer { notes ->
+            if(notes.size<=1) {
+                rvNotes.layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL)
+            } else {
+                rvNotes.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
+            }
             notesAdapter.differ.submitList(notes)
         })
 
         viewModel.readData.observe(viewLifecycleOwner, Observer { list ->
-            notesAdapter.differ.submitList(list.value)
+
+            if(list.size<=1) {
+                rvNotes.layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL)
+            } else {
+                rvNotes.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
+            }
+
+            notesAdapter.differ.submitList(list)
         })
+
+
 
 //        Delete on swipe
         val itemTouchHelper = object :
