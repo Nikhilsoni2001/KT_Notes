@@ -45,17 +45,12 @@ class NotesActivity : AppCompatActivity() {
     lateinit var repository: NotesRepository
     lateinit var factory: NotesViewModelFactory
 
-
-
-
-
     fun searchDatabase(searchQuery: String) {
         repository.searchDatabase(searchQuery).observe(this, {
             viewModel.readData.postValue(it)
         })
 
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,21 +59,15 @@ class NotesActivity : AppCompatActivity() {
         database = NotesDatabase(this@NotesActivity)
         repository = NotesRepository(database)
         factory = NotesViewModelFactory(this@NotesActivity, repository)
-
         viewModel = ViewModelProvider(this, factory).get(NotesViewModel::class.java)
-
-
         checkTheme()
 
         drawerLayout = findViewById(R.id.drawerLayout)
         navigationView = findViewById(R.id.navigationView)
 
-
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-
-
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -152,7 +141,6 @@ class NotesActivity : AppCompatActivity() {
 
     private fun searchDB(query: String) {
         val searchQuery = "%$query%"
-        //viewModel.searchDatabase(searchQuery)
         searchDatabase(searchQuery)
     }
 

@@ -120,7 +120,7 @@ class NotesFragment : Fragment() {
 
     private fun initialization(view: View) {
         viewModel = (activity as NotesActivity).viewModel
-        notesAdapter = NotesAdapter()
+        notesAdapter = NotesAdapter(viewModel)
         createNotesFab = view.findViewById(R.id.createNotesFabButton)
         rvNotes = view.findViewById(R.id.rvNotes)
     }

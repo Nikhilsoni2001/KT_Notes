@@ -26,15 +26,11 @@ class NotesViewModel(private val context: Context, private val repository: Notes
     fun delete(note: Note) = viewModelScope.launch { repository.delete(note) }
     fun getAllNotes() = repository.getAllNotes()
     fun deleteAllNotes() = repository.deleteAllNotes()
-    fun searchDatabase(searchQuery: String) = repository.searchDatabase(searchQuery)
+
+    fun searchFavourites() = repository.searchFavourite()
 
 
     var readData: MutableLiveData<List<Note>> = MutableLiveData()
-
-//    fun searchDatabase(searchQuery: String) {
-//        readData.postValue(repository.searchDatabase(searchQuery))
-//    }
-//
 
 
     private var noteCollectionRef =

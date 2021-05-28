@@ -20,4 +20,7 @@ interface NotesDao {
 
     @Query("SELECT * FROM notes WHERE note_title LIKE :searchQuery")
     fun searchDatabase(searchQuery: String): LiveData<List<Note>>
+
+    @Query("SELECT * FROM notes WHERE note_favourite = 1")
+    fun searchFavourite(): LiveData<List<Note>>
 }

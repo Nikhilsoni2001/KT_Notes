@@ -45,5 +45,8 @@
         <action
             android:id="@+id/action_favouriteFragment_self"
             app:destination="@id/favouriteFragment" />
+        <action
+            android:id="@+id/action_favouriteFragment_to_updateFragment"
+            app:destination="@id/updateFragment" />
     </fragment>
 </navigation>

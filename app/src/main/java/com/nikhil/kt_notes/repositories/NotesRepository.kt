@@ -9,4 +9,5 @@ class NotesRepository(private val db: NotesDatabase) {
     fun getAllNotes() = db.getNotesDao().getAllNotes()
     fun deleteAllNotes() = db.getNotesDao().deleteAllNotes()
     fun searchDatabase(searchQuery: String) = db.getNotesDao().searchDatabase(searchQuery)
+    fun searchFavourite() = db.getNotesDao().searchFavourite()
 }

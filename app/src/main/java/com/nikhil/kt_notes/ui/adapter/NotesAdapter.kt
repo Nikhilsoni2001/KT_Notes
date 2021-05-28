@@ -5,13 +5,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.nikhil.kt_notes.R
 import com.nikhil.kt_notes.db.Note
+import com.nikhil.kt_notes.ui.viewModel.NotesViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
-class NotesAdapter : RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
+class NotesAdapter(private val viewModel: NotesViewModel) :
+    RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
     class NotesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNoteTitle: TextView = view.findViewById(R.id.tvNoteTitle)
         val tvNoteDescription: TextView = view.findViewById(R.id.tvNoteDescription)
@@ -44,6 +52,33 @@ class NotesAdapter : RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
             holder.tvNoteTitle.text = note.note_title
             holder.tvNoteDescription.text = note.note_description
             holder.cbFavourite.isChecked = note.note_favourite
+
+            holder.cbFavourite.apply {
+                setOnClickListener {
+                    note.note_favourite = !note.note_favourite
+                    isChecked = note.note_favourite
+
+                    val updatedNote = Note(
+                        note.note_id,
+                        note.document_id,
+                        note.note_title,
+                        note.note_description,
+                        note.note_favourite,
+                        note.note_sync
+                    )
+                    val map = mutableMapOf<String, Any>()
+                    map["note_favourite"] = note.note_favourite
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            viewModel.updateData(updatedNote, map)
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
 
             if (note.note_sync) holder.tvSync.text = "Sync"
             else holder.tvSync.text = "Not Sync"

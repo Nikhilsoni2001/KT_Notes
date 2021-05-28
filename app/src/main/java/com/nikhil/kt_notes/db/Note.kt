@@ -11,6 +11,6 @@ data class Note(
     var document_id: String? = "",
     val note_title: String = "",
     val note_description: String = "",
-    val note_favourite: Boolean = false,
+    var note_favourite: Boolean = false,
     val note_sync: Boolean = false
 ) : Serializable
