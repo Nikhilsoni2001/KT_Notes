@@ -2,6 +2,7 @@ package com.nikhil.kt_notes.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotesDao {
@@ -16,4 +17,7 @@ interface NotesDao {
 
     @Query("DELETE FROM notes")
     fun deleteAllNotes()
+
+    @Query("SELECT * FROM notes WHERE note_title LIKE :searchQuery")
+    fun searchDatabase(searchQuery: String): LiveData<List<Note>>
 }

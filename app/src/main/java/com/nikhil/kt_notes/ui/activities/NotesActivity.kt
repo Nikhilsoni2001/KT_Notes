@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.nikhil.kt_notes.R
@@ -40,25 +41,48 @@ class NotesActivity : AppCompatActivity() {
         val collection_name = FirebaseAuth.getInstance().currentUser?.email
     }
 
+    lateinit var database: NotesDatabase
+    lateinit var repository: NotesRepository
+    lateinit var factory: NotesViewModelFactory
+
+
+
+
+
+    fun searchDatabase(searchQuery: String) {
+        repository.searchDatabase(searchQuery).observe(this, {
+            viewModel.readData.postValue(it)
+        })
+
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes)
 
-        val database = NotesDatabase(this@NotesActivity)
-        val repository = NotesRepository(database)
-        val factory = NotesViewModelFactory(this@NotesActivity, repository)
+        database = NotesDatabase(this@NotesActivity)
+        repository = NotesRepository(database)
+        factory = NotesViewModelFactory(this@NotesActivity, repository)
+
         viewModel = ViewModelProvider(this, factory).get(NotesViewModel::class.java)
+
 
         checkTheme()
 
         drawerLayout = findViewById(R.id.drawerLayout)
         navigationView = findViewById(R.id.navigationView)
 
+
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        navigationView.menu.getItem(0).isChecked = true
 
         navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -89,15 +113,11 @@ class NotesActivity : AppCompatActivity() {
     }
 
     private fun openHome() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, NotesFragment())
-            .commit()
+        findNavController(R.id.fragment).navigate(R.id.notesFragment)
     }
 
     private fun openFavourites() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, FavouriteFragment())
-            .commit()
+        findNavController(R.id.fragment).navigate(R.id.favouriteFragment)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -114,18 +134,26 @@ class NotesActivity : AppCompatActivity() {
                 searchView.setQuery("", false)
                 searchItem.collapseActionView()
                 Toast.makeText(this@NotesActivity, "Looking for $query", Toast.LENGTH_SHORT).show()
+                searchDB(query.toString())
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 Toast.makeText(this@NotesActivity, "Looking for $newText", Toast.LENGTH_SHORT)
                     .show()
+                searchDB(newText.toString())
                 return false
             }
 
         })
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun searchDB(query: String) {
+        val searchQuery = "%$query%"
+        //viewModel.searchDatabase(searchQuery)
+        searchDatabase(searchQuery)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
